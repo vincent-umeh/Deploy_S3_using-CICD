@@ -20,6 +20,13 @@ jobs:
 
       - name: Install Terraform
         uses: hashicorp/setup-terraform@v3
+      
+         # Restore state from GitHub secret before terraform init
+      - name: Restore Terraform State
+        run: |
+          if [ ! -z "${{ secrets.TERRAFORM_STATE }}" ]; then
+          echo "${{ secrets.TERRAFORM_STATE }}" > terraform.tfstate
+          fi
 
       - name: Terraform Init
         run: terraform init
@@ -30,3 +37,18 @@ jobs:
       - name: Terraform Apply
         #run: terraform apply -auto-approve -var="bucket_name=${{ secrets.BUCKET_NAME }}"
         run: terraform apply -auto-approve #-var="bucket_name=${{ vars.BUCKET_NAME }}"
+
+      # Save the updated state back to GitHub secret
+      - name: Save Terraform State
+        run: |
+          STATE_CONTENT=$(cat terraform.tfstate)
+          echo "STATE_CONTENT<<EOF" >> $GITHUB_ENV
+          echo "$STATE_CONTENT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Update GitHub Secret
+        uses: gliech/create-github-secret-action@v1
+        with:
+          name: TERRAFORM_STATE
+          value: ${{ env.STATE_CONTENT }}
+          pa_token: ${{ secrets.GH_PA_TOKEN }}
