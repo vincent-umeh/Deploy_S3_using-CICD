@@ -25,8 +25,8 @@ jobs:
         run: terraform init
 
       - name: Terraform Plan
-        run: terraform plan -var="bucket_name=${{ vars.BUCKET_NAME }}"
+        run: terraform plan -var="bucket_name=${{ secrets.BUCKET_NAME }}"
 
       - name: Terraform Apply
-        #run: terraform apply -auto-approve -var="bucket_name=${{ secrets.BUCKET_NAME }}"
-        run: terraform apply -auto-approve -var="bucket_name=${{ vars.BUCKET_NAME }}"
+        run: terraform apply -auto-approve -var="bucket_name=${{ secrets.BUCKET_NAME }}"
+        #run: terraform apply -auto-approve -var="bucket_name=${{ vars.BUCKET_NAME }}"
