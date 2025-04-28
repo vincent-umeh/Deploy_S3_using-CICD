@@ -34,5 +34,5 @@ jobs:
         run: terraform init
 
       - name: Terraform Destroy
-        #run: terraform destroy -auto-approve -var="bucket_name=${{ vars.BUCKET_NAME }}"
-        run: terraform destroy -auto-approve -var="bucket_name=${{ secrets.BUCKET_NAME }}"
+        run: terraform destroy -auto-approve -var="bucket_name=${{ vars.BUCKET_NAME }}"
+        #run: terraform destroy -auto-approve -var="bucket_name=${{ secrets.BUCKET_NAME }}"
