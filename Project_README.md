@@ -126,3 +126,55 @@ Clean Up
 To destroy all created resources: 
 
 terraform destroy 
+
+
+
+
+
+Deploy to AWS S3 - GitHub Actions Workflow 
+
+This workflow deploys an S3 bucket using Terraform with manual confirmation.  
+
+Features 
+
+✅ Manual Trigger (workflow_dispatch) with confirmation prompt 
+
+✅ AWS Authentication using secrets 
+
+✅ Terraform Setup & Execution (init, plan, apply) 
+
+✅ State Management (optional state backup in GitHub secrets)  
+
+Usage 
+
+Manually trigger the workflow in GitHub Actions.  
+
+Type deploy to confirm execution. 
+
+Secrets Required 
+
+AWS_ACCESS_KEY_ID  
+
+AWS_SECRET_ACCESS_KEY  
+
+BUCKET_NAME  
+
+Workflow Steps 
+
+Checks out repository code  
+
+Configures AWS credentials  
+
+Installs Terraform   
+
+(Optional) Restores Terraform state  
+
+Runs terraform init, plan, and apply 
+
+ 
+
+Note: Uncomment sections for state persistence if needed.  
+
+🔹 Adjust variables/secrets as per your AWS setup. 
+
+ 
