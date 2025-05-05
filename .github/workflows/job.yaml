@@ -1,11 +1,20 @@
 name: Deploy to S3
 
+# on:
+#   push:
+#     branches: [ "main" ]
+
 on:
-  push:
-    branches: [ "main" ]
+  workflow_dispatch:  # Manual trigger
+    inputs:
+      confirm:
+        description: "Type 'deploy' to confirm"
+        required: true
+        default: "cancel"
 
 jobs:
   deploy:
+    if: github.event.inputs.confirm == 'deploy'  # Double confirmation
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -56,31 +65,4 @@ jobs:
       #     value: ${{ env.STATE_CONTENT }}
       #     pa_token: ${{ secrets.GH_PA_TOKEN }}
 
-    # Save the updated state back to GitHub secret
-      - name: Save Terraform State
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          REPO: ${{ github.repository }}
-
-        run: |  # Read the state file content, 
-          STATE_CONTENT=$(cat terraform.tfstate)
-        
-
-          ENCODED_CONTENT=$(echo "$STATE_CONTENT" | base64 -w 0)  
-        
-
-          json_payload=$(jq -n \
-            --arg value "$ENCODED_CONTENT" \
-            '{
-              "encrypted_value": $value,
-            "key_id": null
-            }')
-        
-
-          curl -L \
-            -X PUT \
-            -H "Accept: application/vnd.github+json" \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "X-GitHub-Api-Version: 2022-11-28" \
-            "https://api.github.com/repos/$REPO/actions/secrets/TERRAFORM_STATE" \
-            -d "$json_payload"
+    
